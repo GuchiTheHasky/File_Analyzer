@@ -1,8 +1,8 @@
 package guchi.the.hasky.fileanalyzer.analyzer;
 
 import guchi.the.hasky.fileanalyzer.analyzeinfo.FileInfo;
-import guchi.the.hasky.fileanalyzer.annotations.TestsVisibility;
-import guchi.the.hasky.fileanalyzer.interfaces.Analyze;
+import guchi.the.hasky.fileanalyzer.utils.DefaultModifierForTests;
+import guchi.the.hasky.fileanalyzer.interfaces.FileAnalyzer;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -11,25 +11,32 @@ import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 
-public class FileAnalyzerBR implements Analyze {
-    private static final String SENTENCES_DELIM = String.valueOf(Pattern.compile("[.?!]"));
-    private static final String WORDS_DELIM = String.valueOf(Pattern.compile(" \n"));
+public class FileFileAnalyzerBufferReader implements FileAnalyzer {
+    private static final Pattern SENTENCES_DELIMER = Pattern.compile("[.?!]");
+    private static final Pattern WORDS_DELIM = Pattern.compile(" \n");
 
-    @Override
-    public FileInfo analyze(String path, String word) throws Exception {
+    public static void main(String[] args) {
+        FileFileAnalyzerBufferReader br = new FileFileAnalyzerBufferReader();
+        String s = br.getContent("src/test/resources/fa/DuckStory.txt");
+        System.out.println(s);
+    }
+
+
+
+    public FileInfo analyze(String path, String word) {
         validateSources(path, word);
         String content = getContent(path);
         List<String> sentences = getSentences(content);
         List<String> filteredSentences = getFilteredSentences(sentences, word);
-        int wordCount = wordCounter(filteredSentences, word);
+        int wordCount = countWord(filteredSentences, word);
         return new FileInfo(wordCount, filteredSentences);
     }
 
     @Override
-    public int wordCount(String path, String word) throws Exception {
+    public int countWord(String path, String word) {
         validateSources(path, word);
         String content = getContent(path);
-        StringTokenizer tokenizer = new StringTokenizer(content, WORDS_DELIM);
+        StringTokenizer tokenizer = new StringTokenizer(content);
         int count = 0;
         while (tokenizer.hasMoreTokens()) {
             if (tokenizer.nextToken().contains(word)) {
@@ -39,8 +46,8 @@ public class FileAnalyzerBR implements Analyze {
         return count;
     }
 
-    @TestsVisibility
-    String getContent(String path) throws IOException {
+    @DefaultModifierForTests
+    String getContent(String path) {
         File file = new File(path);
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             StringBuilder contentBuilder = new StringBuilder();
@@ -49,20 +56,17 @@ public class FileAnalyzerBR implements Analyze {
                 contentBuilder.append(content).append(System.lineSeparator());
             }
             return contentBuilder.toString();
+        } catch (IOException e) {
+            throw new RuntimeException("Exception during file is reading.", e);
         }
     }
 
-    @TestsVisibility
+    @DefaultModifierForTests
     List<String> getSentences(String content) {
-        StringTokenizer tokenizer = new StringTokenizer(content, SENTENCES_DELIM);
-        List<String> sentences = new ArrayList<>();
-        while (tokenizer.hasMoreTokens()) {
-            sentences.add(tokenizer.nextToken());
-        }
-        return sentences;
+        return List.of(SENTENCES_DELIMER.split(content));
     }
 
-    @TestsVisibility
+    @DefaultModifierForTests
     List<String> getFilteredSentences(List<String> content, String word) {
         List<String> filteredSentences = new ArrayList<>();
         for (String sentence : content) {
@@ -73,22 +77,18 @@ public class FileAnalyzerBR implements Analyze {
         return filteredSentences;
     }
 
-    @TestsVisibility
-    void validateSources(String path, String word) throws Exception {
+    @DefaultModifierForTests
+    void validateSources(String path, String word) {
         if (path == null || word == null) {
-            throw new NullPointerException("Error code 404:\nFile name: " + path +
-                    "can't be null;\nString word: " + word + "can't be null;");
-        }
-        String fileName = new File(path).getName();
-        if (!fileName.endsWith(".txt") && !fileName.endsWith(".doc") && !fileName.endsWith(".docx")) {
-            throw new UnsupportedOperationException("Current file format is not supported" + path);
+            throw new NullPointerException("Error code 404. File name: " + path + "can't be null. " +
+                    "String word: " + word + "can't be null;");
         }
         if (new File(path).length() == 0) {
-            throw new Exception("File: " + path + " is empty.");
+            throw new IllegalArgumentException("File: " + path + " is empty.");
         }
     }
 
-    int wordCounter(List<String> list, String word) {
+    int countWord(List<String> list, String word) {  // має бути countWord
         int count = 0;
         for (String sentence : list) {
             if (sentence.contains(word)) {

@@ -15,7 +15,7 @@ import java.util.StringTokenizer;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FileAnalyzerBRTest {
+public class FileFileAnalyzerBufferReaderTest {
 
 
     private final String CONTENT_FOR_LIST_SENTENCES = "src/test/resources/fa/contentForListSentences.txt";
@@ -24,13 +24,13 @@ public class FileAnalyzerBRTest {
     private final String CUSTOM_CONTENT = "src/test/resources/fa/strContent.txt";
     private final String EMPTY_FILE = "src/test/resources/fa/emptyFile.txt";
     private final String UTF_8 = "src/test/resources/fa/utf8.txt";
-    private FileAnalyzerBR analyzer;
+    private FileFileAnalyzerBufferReader analyzer;
     private FileInfo fileInfo;
 
 
     @BeforeEach
     public void init() throws IOException {
-        analyzer = new FileAnalyzerBR();
+        analyzer = new FileFileAnalyzerBufferReader();
         fileInfo = new FileInfo();
         createFilesAndContentForTesting();
     }
@@ -95,7 +95,7 @@ public class FileAnalyzerBRTest {
     public void testCalculateWordsCountFromSourceFileAndCheckExpectedCount() throws Exception {
         String word = "java";
         int expected = 10;
-        int actual = analyzer.wordCount(PATH_FOR_COUNTING_WORD, word);
+        int actual = analyzer.countWord(PATH_FOR_COUNTING_WORD, word);
         assertEquals(expected, actual);
     }
 

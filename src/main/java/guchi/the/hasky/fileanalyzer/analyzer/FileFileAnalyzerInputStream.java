@@ -1,8 +1,8 @@
 package guchi.the.hasky.fileanalyzer.analyzer;
 
 import guchi.the.hasky.fileanalyzer.analyzeinfo.FileInfo;
-import guchi.the.hasky.fileanalyzer.annotations.TestsVisibility;
-import guchi.the.hasky.fileanalyzer.interfaces.Analyze;
+import guchi.the.hasky.fileanalyzer.utils.DefaultModifierForTests;
+import guchi.the.hasky.fileanalyzer.interfaces.FileAnalyzer;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -10,24 +10,42 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-public class FileAnalyzerIS implements Analyze {
+public class FileFileAnalyzerInputStream implements FileAnalyzer {
     private static final String SENTENCES_DELIM = String.valueOf(Pattern.compile("[.?!]"));
     private static final String WORDS_DELIM = String.valueOf(Pattern.compile(" \n"));
 
     @Override
-    public FileInfo analyze(String path, String word) throws Exception { //TODO: переробити
-        validateSources(path, word);
-        String content = getContent(path);
-        int wordCount = wordCount(path, word);
+    public FileInfo analyze(String path, String word)  { //TODO: переробити
+        try {
+            validateSources(path, word);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        String content = null;
+        try {
+            content = getContent(path);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        int wordCount = countWord(path, word);
         List<String> sentences = sentences(content);
         List<String> filterSentences = filterSentences(sentences, word);
         return new FileInfo(wordCount, filterSentences);
     }
 
     @Override
-    public int wordCount(String path, String word) throws Exception {
-        validateSources(path, word);
-        String content = getContent(path);
+    public int countWord(String path, String word)  {
+        try {
+            validateSources(path, word);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        String content = null;
+        try {
+            content = getContent(path);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         StringTokenizer tokenizer = new StringTokenizer(content, WORDS_DELIM);
         int count = 0;
         while (tokenizer.hasMoreTokens()) {
@@ -38,11 +56,11 @@ public class FileAnalyzerIS implements Analyze {
         return count;
     }
 
-    @TestsVisibility
+    @DefaultModifierForTests
     String getContent(String path) throws FileNotFoundException {
         File file = new File(path);
+        int size = validateFileSize(file.length());
         try (InputStream input = new FileInputStream(file)) {
-            int size = validateFileSize(file.length());
             byte[] buffer = new byte[size];
             while (input.read(buffer) != -1) {
                 return new String(buffer, encoder(path));
@@ -53,7 +71,7 @@ public class FileAnalyzerIS implements Analyze {
         return null;
     }
 
-    @TestsVisibility
+    @DefaultModifierForTests
     String encoder(String path) throws IOException {
         InputStreamReader reader = new InputStreamReader(new FileInputStream(path));
         String encoder = reader.getEncoding();
@@ -61,7 +79,7 @@ public class FileAnalyzerIS implements Analyze {
         return encoder;
     }
 
-    @TestsVisibility
+    @DefaultModifierForTests
     List<String> sentences(String content) {
         StringTokenizer tokenizer = new StringTokenizer(content, SENTENCES_DELIM);
         List<String> sentences = new ArrayList<>();
@@ -71,7 +89,7 @@ public class FileAnalyzerIS implements Analyze {
         return sentences;
     }
 
-    @TestsVisibility
+    @DefaultModifierForTests
     List<String> filterSentences(List<String> content, String word) {
         List<String> filterSentences = new ArrayList<>();
         for (String sentence : content) {
@@ -82,7 +100,7 @@ public class FileAnalyzerIS implements Analyze {
         return filterSentences;
     }
 
-    @TestsVisibility
+    @DefaultModifierForTests
     int validateFileSize(Long length) {
         if (length > 8192) {
             throw new StackOverflowError("Error, file size is too large.");
@@ -90,7 +108,7 @@ public class FileAnalyzerIS implements Analyze {
         return Math.toIntExact(length);
     }
 
-    @TestsVisibility
+    @DefaultModifierForTests
     void validateSources(String path, String word) throws Exception {
         if (path == null || word == null) {
             throw new NullPointerException("Error code 404:\nFile name: " + path +

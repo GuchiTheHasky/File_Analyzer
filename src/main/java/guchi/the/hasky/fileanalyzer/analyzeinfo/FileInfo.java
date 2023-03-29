@@ -1,4 +1,4 @@
-package guchi.the.hasky.fileanalyzer.analyzeinfo;
+package guchi.the.hasky.fileanalyzer.analyzeinfo; // папку переіменувати в entity
 
 import java.util.List;
 
@@ -22,9 +22,5 @@ public class FileInfo {
         return sentences;
     }
 
-    @Override
-    public String toString() {
-        return "Count word: " + countWord + "\nSentences: \n" + sentences;
-    }
 }
 

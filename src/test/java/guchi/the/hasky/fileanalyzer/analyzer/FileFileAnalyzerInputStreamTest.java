@@ -12,7 +12,7 @@ import java.util.StringTokenizer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FileAnalyzerISTest {
+public class FileFileAnalyzerInputStreamTest {
 
     private final String CONTENT_FOR_LIST_SENTENCES = "src/test/resources/fa/contentForListSentences.txt";
     private final String PATH_FOR_COUNTING_WORD = "src/test/resources/fa/CountingWord.txt";
@@ -20,13 +20,13 @@ public class FileAnalyzerISTest {
     private final String CUSTOM_CONTENT = "src/test/resources/fa/strContent.txt";
     private final String EMPTY_FILE = "src/test/resources/fa/emptyFile.txt";
     private final String UTF_8 = "src/test/resources/fa/utf8.txt";
-    private FileAnalyzerIS analyzer;
+    private FileFileAnalyzerInputStream analyzer;
     private FileInfo fileInfo;
 
 
     @BeforeEach
     public void init() throws IOException {
-        analyzer = new FileAnalyzerIS();
+        analyzer = new FileFileAnalyzerInputStream();
         fileInfo = new FileInfo();
         createFilesAndContentForTesting();
     }
@@ -91,7 +91,7 @@ public class FileAnalyzerISTest {
     public void testCalculateWordsCountFromSourceFileAndCheckExpectedCount() throws Exception {
         String word = "java";
         int expected = 10;
-        int actual = analyzer.wordCount(PATH_FOR_COUNTING_WORD, word);
+        int actual = analyzer.countWord(PATH_FOR_COUNTING_WORD, word);
         assertEquals(expected, actual);
     }
 
@@ -183,7 +183,7 @@ public class FileAnalyzerISTest {
     @Test // 11.
     @DisplayName("Test, get file encoding.")
     public void testGetFileEncodingFromSourceFileAndCheckReturnedString() throws IOException {
-        FileAnalyzerIS an = new FileAnalyzerIS();
+        FileFileAnalyzerInputStream an = new FileFileAnalyzerInputStream();
         String expected = "UTF8";
         String actual = an.encoder(UTF_8);
         assertEquals(expected, actual);
