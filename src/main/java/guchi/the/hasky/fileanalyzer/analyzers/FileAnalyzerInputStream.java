@@ -1,6 +1,6 @@
-package guchi.the.hasky.fileanalyzer.analyzer;
+package guchi.the.hasky.fileanalyzer.analyzers;
 
-import guchi.the.hasky.fileanalyzer.analyzeinfo.FileInfo;
+import guchi.the.hasky.fileanalyzer.entity.FileInfo;
 import guchi.the.hasky.fileanalyzer.utils.DefaultModifierForTests;
 import guchi.the.hasky.fileanalyzer.interfaces.FileAnalyzer;
 
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
-public class FileFileAnalyzerInputStream implements FileAnalyzer {
+public class FileAnalyzerInputStream implements FileAnalyzer {
     private static final String SENTENCES_DELIM = String.valueOf(Pattern.compile("[.?!]"));
     private static final String WORDS_DELIM = String.valueOf(Pattern.compile(" \n"));
 

@@ -1,6 +1,6 @@
-package guchi.the.hasky.fileanalyzer.analyzer;
+package guchi.the.hasky.fileanalyzer.analyzers;
 
-import guchi.the.hasky.fileanalyzer.analyzeinfo.FileInfo;
+import guchi.the.hasky.fileanalyzer.entity.FileInfo;
 import org.junit.jupiter.api.*;
 
 import java.io.*;
@@ -12,29 +12,29 @@ import java.util.StringTokenizer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FileFileAnalyzerInputStreamTest {
+public class FileAnalyzerInputStreamTest {
 
-    private final String CONTENT_FOR_LIST_SENTENCES = "src/test/resources/fa/contentForListSentences.txt";
-    private final String PATH_FOR_COUNTING_WORD = "src/test/resources/fa/CountingWord.txt";
-    private final String NOT_SUPPORTED = "src/test/resources/fa/notSupported.html";
-    private final String CUSTOM_CONTENT = "src/test/resources/fa/strContent.txt";
-    private final String EMPTY_FILE = "src/test/resources/fa/emptyFile.txt";
-    private final String UTF_8 = "src/test/resources/fa/utf8.txt";
-    private FileFileAnalyzerInputStream analyzer;
+    private final String CONTENT_FOR_LIST_SENTENCES = "src/test/resources/fileanalyzer/contentForListSentences.txt";
+    private final String PATH_FOR_COUNTING_WORD = "src/test/resources/fileanalyzer/CountingWord.txt";
+    private final String NOT_SUPPORTED = "src/test/resources/fileanalyzer/notSupported.html";
+    private final String CUSTOM_CONTENT = "src/test/resources/fileanalyzer/strContent.txt";
+    private final String EMPTY_FILE = "src/test/resources/fileanalyzer/emptyFile.txt";
+    private final String UTF_8 = "src/test/resources/fileanalyzer/utf8.txt";
+    private FileAnalyzerInputStream analyzer;
     private FileInfo fileInfo;
 
 
     @BeforeEach
     public void init() throws IOException {
-        analyzer = new FileFileAnalyzerInputStream();
+        analyzer = new FileAnalyzerInputStream();
         fileInfo = new FileInfo();
         createFilesAndContentForTesting();
     }
 
-    @AfterEach
-    public void delete() {
-        deleteFilesAndContentForTesting();
-    }
+//    @AfterEach
+//    public void delete() {
+//        deleteFilesAndContentForTesting();
+//    }
 
     @Test // 1.
     @DisplayName("Test, try to analyze unsupported file format throw UnsupportedOperationException exception")
@@ -140,7 +140,7 @@ public class FileFileAnalyzerInputStreamTest {
     @Test // 9.
     @DisplayName("Test, analyze source file, return object with words count.")
     public void testAnalyzeCheckExpectedFileInfoWordCountWithActualWordsCount() throws Exception {
-        String path = "src/test/resources/fa/DuckStory.txt";
+        String path = "src/test/resources/fileanalyzer/DuckStory.txt";
         String word = "duck";
 
         fileInfo = analyzer.analyze(path, word);
@@ -154,7 +154,7 @@ public class FileFileAnalyzerInputStreamTest {
     @Test // 10.
     @DisplayName("Test, analyze source file, return object with List<Str> filterSentences, check List size & content.")
     public void testAnalyzeGetExpectedAndActualListsOfFilteredSentencesCheckSizeAndContent() throws Exception {
-        String path = "src/test/resources/fa/DuckStory.txt";
+        String path = "src/test/resources/fileanalyzer/DuckStory.txt";
         String word = "duck";
         String content = analyzer.getContent(path);
         List<String> sentences = analyzer.sentences(content);
@@ -183,7 +183,7 @@ public class FileFileAnalyzerInputStreamTest {
     @Test // 11.
     @DisplayName("Test, get file encoding.")
     public void testGetFileEncodingFromSourceFileAndCheckReturnedString() throws IOException {
-        FileFileAnalyzerInputStream an = new FileFileAnalyzerInputStream();
+        FileAnalyzerInputStream an = new FileAnalyzerInputStream();
         String expected = "UTF8";
         String actual = an.encoder(UTF_8);
         assertEquals(expected, actual);

@@ -1,4 +1,4 @@
-package guchi.the.hasky.fileanalyzer.analyzeinfo; // папку переіменувати в entity
+package guchi.the.hasky.fileanalyzer.entity;
 
 import java.util.List;
 

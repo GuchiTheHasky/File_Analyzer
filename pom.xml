@@ -20,7 +20,8 @@
 
     </dependencies>
 
-    <build>
+    <build>  <!--    // сюди треба вставити пропертіс-->
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

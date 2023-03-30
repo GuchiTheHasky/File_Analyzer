@@ -1,6 +1,7 @@
-package guchi.the.hasky.fileanalyzer.analyzer;
+package guchi.the.hasky.fileanalyzer.analyzers;
 
-import guchi.the.hasky.fileanalyzer.analyzeinfo.FileInfo;
+import guchi.the.hasky.fileanalyzer.entity.FileInfo;
+import guchi.the.hasky.fileanalyzer.utils.AnalyzerTools;
 import guchi.the.hasky.fileanalyzer.utils.DefaultModifierForTests;
 import guchi.the.hasky.fileanalyzer.interfaces.FileAnalyzer;
 
@@ -11,12 +12,11 @@ import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 
-public class FileFileAnalyzerBufferReader implements FileAnalyzer {
-    private static final Pattern SENTENCES_DELIMER = Pattern.compile("[.?!]");
-    private static final Pattern WORDS_DELIM = Pattern.compile(" \n");
+public class FileAnalyzerBufferReader implements FileAnalyzer {
+    //private static final Pattern SENTENCES_DELIMER = Pattern.compile("[.?!]");
 
     public static void main(String[] args) {
-        FileFileAnalyzerBufferReader br = new FileFileAnalyzerBufferReader();
+        FileAnalyzerBufferReader br = new FileAnalyzerBufferReader();
         String s = br.getContent("src/test/resources/fa/DuckStory.txt");
         System.out.println(s);
     }
@@ -63,7 +63,7 @@ public class FileFileAnalyzerBufferReader implements FileAnalyzer {
 
     @DefaultModifierForTests
     List<String> getSentences(String content) {
-        return List.of(SENTENCES_DELIMER.split(content));
+        return List.of(AnalyzerTools.SENTENCES_DELIMER.split(content));
     }
 
     @DefaultModifierForTests
@@ -88,7 +88,7 @@ public class FileFileAnalyzerBufferReader implements FileAnalyzer {
         }
     }
 
-    int countWord(List<String> list, String word) {  // має бути countWord
+    int countWord(List<String> list, String word) {
         int count = 0;
         for (String sentence : list) {
             if (sentence.contains(word)) {

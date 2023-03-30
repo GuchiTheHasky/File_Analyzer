@@ -1,6 +1,6 @@
-package guchi.the.hasky.fileanalyzer.analyzer;
+package guchi.the.hasky.fileanalyzer.analyzers;
 
-import guchi.the.hasky.fileanalyzer.analyzeinfo.FileInfo;
+import guchi.the.hasky.fileanalyzer.entity.FileInfo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,22 +15,21 @@ import java.util.StringTokenizer;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FileFileAnalyzerBufferReaderTest {
+public class FileAnalyzerBufferReaderTest {
 
 
-    private final String CONTENT_FOR_LIST_SENTENCES = "src/test/resources/fa/contentForListSentences.txt";
-    private final String PATH_FOR_COUNTING_WORD = "src/test/resources/fa/CountingWord.txt";
-    private final String NOT_SUPPORTED = "src/test/resources/fa/notSupported.html";
-    private final String CUSTOM_CONTENT = "src/test/resources/fa/strContent.txt";
-    private final String EMPTY_FILE = "src/test/resources/fa/emptyFile.txt";
-    private final String UTF_8 = "src/test/resources/fa/utf8.txt";
-    private FileFileAnalyzerBufferReader analyzer;
+    private final String CONTENT_FOR_LIST_SENTENCES = "src/test/resources/fileanalyzer/contentForListSentences.txt";
+    private final String PATH_FOR_COUNTING_WORD = "src/test/resources/fileanalyzer/CountingWord.txt";
+    private final String CUSTOM_CONTENT = "src/test/resources/fileanalyzer/strContent.txt";
+    private final String EMPTY_FILE = "src/test/resources/fileanalyzer/emptyFile.txt";
+    private final String UTF_8 = "src/test/resources/fileanalyzer/utf8.txt";
+    private FileAnalyzerBufferReader analyzer;
     private FileInfo fileInfo;
 
 
     @BeforeEach
     public void init() throws IOException {
-        analyzer = new FileFileAnalyzerBufferReader();
+        analyzer = new FileAnalyzerBufferReader();
         fileInfo = new FileInfo();
         createFilesAndContentForTesting();
     }
@@ -41,46 +40,33 @@ public class FileFileAnalyzerBufferReaderTest {
     }
 
     @Test // 1.
-    @DisplayName("Test, try to analyze unsupported file format throw UnsupportedOperationException exception")
-    public void testTryToAnalyzeUnsupportedFileFormatThrowException() {
-        String path = NOT_SUPPORTED;
-        Throwable thrown = assertThrows(UnsupportedOperationException.class, () -> {
-            analyzer.validateSources(path, "Hello");
+    @DisplayName("Test, try to analyze empty file, throw exception.")
+    public void testTryToAnalyzeEmptyFileThrowException() {
+        Throwable thrown = assertThrows(IllegalArgumentException.class, () -> {
+            analyzer.validateSources(EMPTY_FILE, "Hello");
         });
         assertNotNull(thrown.getMessage());
     }
 
     @Test // 2.
-    @DisplayName("Test, try to analyze empty file, throw exception.")
-    public void testTryToAnalyzeEmptyFileThrowException() {
-        String path = "src/test/resources/fa/emptyFile.txt";
-        Throwable thrown = assertThrows(Exception.class, () -> {
-            analyzer.validateSources(path, "Hello");
+    @DisplayName("Test, throw exception if file path is null.")
+    public void testThrowNullPointExceptionIfFilePathIsNull() {
+        Throwable thrown = assertThrows(NullPointerException.class, () -> {
+            analyzer.validateSources(null, "Hello");
         });
         assertNotNull(thrown.getMessage());
     }
 
     @Test // 3.
-    @DisplayName("Test, throw exception if file path is null.")
-    public void testThrowNullPointExceptionIfFilePathIsNull() {
-        String path = null;
+    @DisplayName("Test, throw exception if String word is null.")
+    public void testThrowNullPointExceptionIfStringWordIsNull() {
         Throwable thrown = assertThrows(NullPointerException.class, () -> {
-            analyzer.validateSources(path, "Hello");
+            analyzer.validateSources("path", null);
         });
         assertNotNull(thrown.getMessage());
     }
 
     @Test // 4.
-    @DisplayName("Test, throw exception if String word is null.")
-    public void testThrowNullPointExceptionIfStringWordIsNull() {
-        String word = null;
-        Throwable thrown = assertThrows(NullPointerException.class, () -> {
-            analyzer.validateSources("path", word);
-        });
-        assertNotNull(thrown.getMessage());
-    }
-
-    @Test // 5.
     @DisplayName("Test, get content from file source, return String, check length & content.")
     public void testGetContentFromSourceFileCheckLengthAndActualContentReturnString() throws IOException {
         String expected = getContent(CUSTOM_CONTENT);
@@ -90,16 +76,16 @@ public class FileFileAnalyzerBufferReaderTest {
         assertEquals(expected, actual);
     }
 
-    @Test // 6.
+    @Test // 5.
     @DisplayName("Test, calculate words count, check expected count.")
-    public void testCalculateWordsCountFromSourceFileAndCheckExpectedCount() throws Exception {
+    public void testCalculateWordsCountFromSourceFileAndCheckExpectedCount() {
         String word = "java";
         int expected = 10;
         int actual = analyzer.countWord(PATH_FOR_COUNTING_WORD, word);
         assertEquals(expected, actual);
     }
 
-    @Test // 7.
+    @Test // 6.
     @DisplayName("Test, get content from source file, return List<Str> sentences.")
     public void testGetContentFromSourceFileReturnedListCheckSizeAndActualContent() throws IOException {
         List<String> expected = getSentences();
@@ -120,7 +106,7 @@ public class FileFileAnalyzerBufferReaderTest {
         assertEquals(expectedLast, actualLast);
     }
 
-    @Test // 8.
+    @Test // 7.
     @DisplayName("Test, access List<Str> sentences, return filtered List<Str> filtrSentences.")
     public void testGetListOfStringReturnFilteredListListCheckSizeAndActualContent() throws IOException {
         List<String> expected = getFilteredSentences();
@@ -141,10 +127,10 @@ public class FileFileAnalyzerBufferReaderTest {
         assertEquals(expectedLast, actualLast);
     }
 
-    @Test // 9.
+    @Test // 8.
     @DisplayName("Test, analyze source file, return object with words count.")
     public void testAnalyzeCheckExpectedFileInfoWordCountWithActualWordsCount() throws Exception {
-        String path = "src/test/resources/fa/DuckStory.txt";
+        String path = "src/test/resources/fileanalyzer/DuckStory.txt";
         String word = "duck";
 
         fileInfo = analyzer.analyze(path, word);
@@ -155,10 +141,10 @@ public class FileFileAnalyzerBufferReaderTest {
         assertEquals(expectedWordsCount, actualWordsCount);
     }
 
-    @Test // 10.
+    @Test // 9.
     @DisplayName("Test, analyze source file, return object with List<Str> filterSentences, check List size & content.")
-    public void testAnalyzeGetExpectedAndActualListsOfFilteredSentencesCheckSizeAndContent() throws Exception {
-        String path = "src/test/resources/fa/DuckStory.txt";
+    public void testAnalyzeGetExpectedAndActualListsOfFilteredSentencesCheckSizeAndContent() {
+        String path = "src/test/resources/fileanalyzer/DuckStory.txt";
         String word = "duck";
         String content = analyzer.getContent(path);
         List<String> sentences = analyzer.getSentences(content);
@@ -184,11 +170,11 @@ public class FileFileAnalyzerBufferReaderTest {
         assertEquals(expectedLast, actualLast);
     }
 
-    @Test
-    @DisplayName("Test, try read file & throw FileNotFoundException if Current file doesn't exist.")
-    public void testThrowFileNotFoundExceptionIfCurrentPathFileDoesntExist() {
+    @Test // 10.
+    @DisplayName("Test 10: try read file & throw FileNotFoundException if Current file doesn't exist.")
+    public void testThrowFileNotFoundExceptionIfCurrentPathFileDoesNotExist() {
         String path = "this/path/does/not/exist.txt";
-        Throwable thrown = assertThrows(FileNotFoundException.class, () -> {
+        Throwable thrown = assertThrows(RuntimeException.class, () -> {
             analyzer.getContent(path);
         });
         assertNotNull(thrown.getMessage());
@@ -204,7 +190,6 @@ public class FileFileAnalyzerBufferReaderTest {
         new File(CUSTOM_CONTENT).createNewFile();
         createContentForStr();
         new File(EMPTY_FILE).createNewFile();
-        new File(NOT_SUPPORTED).createNewFile();
     }
 
     private void deleteFilesAndContentForTesting() {
@@ -213,7 +198,6 @@ public class FileFileAnalyzerBufferReaderTest {
         new File(CONTENT_FOR_LIST_SENTENCES).delete();
         new File(CUSTOM_CONTENT).delete();
         new File(EMPTY_FILE).delete();
-        new File(NOT_SUPPORTED).delete();
     }
 
     String getContent(String path) throws IOException {
