@@ -1,18 +1,12 @@
 package guchi.the.hasky.fileanalyzer.interfaces;
 
-import guchi.the.hasky.fileanalyzer.entity.FileInfo;
+import guchi.the.hasky.fileanalyzer.entity.FileStatistic;
 
 public interface FileAnalyzer {
     /**
-     * Return new FileInfo with:
+     * Return new FileStatistic with:
      * List<String> sentences;
      * int count word;
      */
-    FileInfo analyze(String path, String word);
-
-//    /**
-//     * Return int count of current word in String.
-//     */
-//    int countWord(String path, String word); // я залишив цей метод, щоб було більше тестів в абстрактному класі
-
+    FileStatistic analyze(String path, String word);
 }

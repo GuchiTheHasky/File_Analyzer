@@ -1,12 +1,16 @@
 package guchi.the.hasky.fileanalyzer.utils;
 
+import lombok.Cleanup;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.regex.Pattern;
 
 public class AnalyzerTools {
     public static final Pattern SENTENCES_DELIMER = Pattern.compile("[.?!]");
-    public static final Pattern WORDS_DELIMER = Pattern.compile(" \n");
 
     public static int countWord(List<String> list, String word) {
         int count = 0;
@@ -16,6 +20,19 @@ public class AnalyzerTools {
             }
         }
         return count;
+    }
+
+    public static String encoder(String path) throws IOException {
+        @Cleanup InputStreamReader reader = new InputStreamReader(new FileInputStream(path));
+        return reader.getEncoding();
+    }
+
+    public static int validateFileSize(String path) {
+        File file = new File(path);
+        if (file.length() > 8192) {
+            throw new StackOverflowError("Error, file size is too large.");
+        }
+        return Math.toIntExact(file.length());
     }
 
     public static void validateSources(String path, String word) {

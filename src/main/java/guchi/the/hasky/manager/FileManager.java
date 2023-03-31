@@ -24,24 +24,7 @@ public class FileManager {
         copyFile(path, destination);
     }
 
-    private static void copyFile(String path, String destination) {
-        File source = new File(path);
-        validateFileSize(source);
-        File dest = new File(destination + File.separator + source.getName());
-        try (FileInputStream input = new FileInputStream(source);
-             FileOutputStream output = new FileOutputStream(dest)) {
-            int size = (int) source.length();
-            byte[] buffer = new byte[size];
-            int length;
-            while ((length = input.read(buffer)) != -1) {
-                output.write(buffer, 0, length);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e); //TODO:
-        }
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored") // не зміг в інший спосіб погасити renameTo
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void move(String source, String destination) {
         File file = new File(source);
         System.out.println(file.getName());
@@ -65,13 +48,27 @@ public class FileManager {
         validatePath(destination);
     }
 
-
-
-
     @DefaultModifierForTests
     static void validateFileSize(File source) {
         if (source.length() > 8192) {
             throw new StackOverflowError("Error, current file: " + source + " is too large.");
+        }
+    }
+
+    private static void copyFile(String path, String destination) {
+        File source = new File(path);
+        validateFileSize(source);
+        File dest = new File(destination + File.separator + source.getName());
+        try (FileInputStream input = new FileInputStream(source);
+             FileOutputStream output = new FileOutputStream(dest)) {
+            int size = (int) source.length();
+            byte[] buffer = new byte[size];
+            int length;
+            while ((length = input.read(buffer)) != -1) {
+                output.write(buffer, 0, length);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Exception during file is reading.", e);
         }
     }
 

@@ -1,8 +1,9 @@
 package guchi.the.hasky.fileanalyzer.analyzers;
 
-import guchi.the.hasky.fileanalyzer.entity.FileInfo;
+import guchi.the.hasky.fileanalyzer.entity.FileStatistic;
 import guchi.the.hasky.fileanalyzer.interfaces.FileAnalyzer;
 import guchi.the.hasky.fileanalyzer.utils.AnalyzerTools;
+import lombok.Cleanup;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.*;
 
@@ -15,14 +16,14 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public abstract class AbstractFileAnalyzerTest  {
+public abstract class AbstractFileAnalyzerTest {
 
     private final String CONTENT_FOR_LIST_SENTENCES = "src/test/resources/fileanalyzer/contentForListSentences.txt";
     private final String PATH_FOR_COUNTING_WORD = "src/test/resources/fileanalyzer/CountingWord.txt";
-    private final String CUSTOM_CONTENT = "src/test/resources/fileanalyzer/strContent.txt";
+    private final String LARGE_SIZE_FILE = "src/test/resources/fileanalyzer/largeFileSize.txt";
     private final String DUCK_STORY = "src/test/resources/fileanalyzer/DuckStory.txt";
     private final String EMPTY_FILE = "src/test/resources/fileanalyzer/emptyFile.txt";
-    private final String UTF_8 = "src/test/resources/fileanalyzer/utf8.txt";
+
     private FileAnalyzer analyzer;
 
     @BeforeEach
@@ -46,6 +47,7 @@ public abstract class AbstractFileAnalyzerTest  {
         });
         assertNotNull(thrown.getMessage());
     }
+
     @Test // 2.
     @DisplayName("Test 2, throw exception if word is null.")
     public void testThrowNullPointExceptionIfWordIsNull() {
@@ -54,6 +56,7 @@ public abstract class AbstractFileAnalyzerTest  {
         });
         assertNotNull(thrown.getMessage());
     }
+
     @Test // 3.
     @DisplayName("Test 3, throw exception if file is empty.")
     public void testThrowIllegalArgumentExceptionIfFileIsEmpty() {
@@ -72,6 +75,7 @@ public abstract class AbstractFileAnalyzerTest  {
         });
         assertNotNull(thrown.getMessage());
     }
+
     @Test // 6.
     @DisplayName("Test 6, throw exception if word length is zero.")
     public void testThrowIllegalArgumentExceptionIfWordLengthIsZero() {
@@ -87,7 +91,7 @@ public abstract class AbstractFileAnalyzerTest  {
     public void testCalculateWordsCountFromSourceFileAndCheckExpectedCount() {
         String word = "world";
         int expected = 5;
-        FileInfo info = analyzer.analyze(CONTENT_FOR_LIST_SENTENCES, word);
+        FileStatistic info = analyzer.analyze(CONTENT_FOR_LIST_SENTENCES, word);
         assertEquals(expected, info.getCountWord());
     }
 
@@ -101,7 +105,7 @@ public abstract class AbstractFileAnalyzerTest  {
         List<String> sentences = getSentences(content);
         List<String> expectedList = getFilteredSentences(sentences, word);
 
-        FileInfo info = analyzer.analyze(CONTENT_FOR_LIST_SENTENCES, word);
+        FileStatistic info = analyzer.analyze(CONTENT_FOR_LIST_SENTENCES, word);
         List<String> actualList = info.getSentences();
 
         assertEquals(expectedList.size(), actualList.size());
@@ -111,38 +115,47 @@ public abstract class AbstractFileAnalyzerTest  {
         assertEquals(expectedList.get(expectedList.size() - 1), actualList.get(actualList.size() - 1));
     }
 
-
-
-
-    //____________________________________________________________________
+    @Test
+    @DisplayName("Test, throw exception if file length() is too large.")
+    public void testThrowStackOverflowErrorIfFileSizeIsTooLarge() {
+        Throwable thrown = assertThrows(StackOverflowError.class, () -> {
+            analyzer.analyze(LARGE_SIZE_FILE, "word");
+        });
+        assertNotNull(thrown.getMessage());
+    }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void createFilesAndContentForTesting() throws IOException {
         new File(PATH_FOR_COUNTING_WORD).createNewFile();
         createContentForCounting();
-        new File(UTF_8).createNewFile();
         new File(CONTENT_FOR_LIST_SENTENCES).createNewFile();
         createContentForListSentences();
-        new File(CUSTOM_CONTENT).createNewFile();
-        createContentForStr();
         new File(EMPTY_FILE).createNewFile();
+        new File(LARGE_SIZE_FILE).createNewFile();
+        createContentForLargeSizeFile();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void deleteFilesAndContentForTesting() {
         new File(PATH_FOR_COUNTING_WORD).delete();
-        new File(UTF_8).delete();
         new File(CONTENT_FOR_LIST_SENTENCES).delete();
-        new File(CUSTOM_CONTENT).delete();
         new File(EMPTY_FILE).delete();
+        new File(LARGE_SIZE_FILE).delete();
     }
 
-    String getContent(String path) {
-        try {
-            return Files.lines(Paths.get(path)).collect(Collectors.joining("\n"));
-        } catch (IOException e) {
-            throw new RuntimeException("Error, you don't have access to read this file: " + path + '.');
+    @SneakyThrows
+    private void createContentForLargeSizeFile() {
+        File file = new File(LARGE_SIZE_FILE);
+        String content = " content ";
+        @Cleanup FileWriter writer = new FileWriter(file);
+        while (file.length() < 8193) {
+            writer.write(content);
         }
+    }
+
+    @SneakyThrows
+    String getContent(String path) {
+        return Files.lines(Paths.get(path)).collect(Collectors.joining("\n"));
     }
 
     private List<String> getSentences(String content) {
@@ -187,16 +200,4 @@ public abstract class AbstractFileAnalyzerTest  {
             }
         }
     }
-
-    private void createContentForStr() throws IOException {
-        String content = " Hello java world!";
-        int counter = 3;
-        try (OutputStream outputStream = new FileOutputStream(CUSTOM_CONTENT)) {
-            while (counter != 0) {
-                outputStream.write(content.getBytes());
-                counter--;
-            }
-        }
-    }
-
 }

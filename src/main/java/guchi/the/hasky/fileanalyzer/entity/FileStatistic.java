@@ -8,7 +8,7 @@ import java.util.List;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class FileInfo {
+public class FileStatistic {
     @NonNull
     private int countWord;
     private List<String> sentences;
