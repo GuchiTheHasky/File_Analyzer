@@ -10,9 +10,9 @@ public interface FileAnalyzer {
      */
     FileInfo analyze(String path, String word);
 
-    /**
-     * Return int count of current word in String.
-     */
-    int countWord(String path, String word); // переробити щоб був тільки каунт ворд файл інфо
+//    /**
+//     * Return int count of current word in String.
+//     */
+//    int countWord(String path, String word); // я залишив цей метод, щоб було більше тестів в абстрактному класі
 
 }

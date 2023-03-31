@@ -9,8 +9,11 @@
     <artifactId>file-analyzer</artifactId>
     <version>1.0</version>
 
-    <dependencies>
+    <properties>
+        <target>17</target>
+    </properties>
 
+    <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -18,17 +21,22 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.26</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
-    <build>  <!--    // сюди треба вставити пропертіс-->
-
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>17</source>
-                    <target>17</target>
+                    <target>${target}</target>
                 </configuration>
             </plugin>
         </plugins>

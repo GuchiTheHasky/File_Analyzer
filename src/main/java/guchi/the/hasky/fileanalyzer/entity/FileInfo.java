@@ -1,26 +1,16 @@
 package guchi.the.hasky.fileanalyzer.entity;
 
+import lombok.*;
+
 import java.util.List;
 
+@Getter
+@NoArgsConstructor
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class FileInfo {
+    @NonNull
     private int countWord;
     private List<String> sentences;
-
-    public FileInfo() {
-    }
-
-    public FileInfo(int countWord, List<String> sentences) {
-        this.countWord = countWord;
-        this.sentences = sentences;
-    }
-
-    public int getCountWord() {
-        return countWord;
-    }
-
-    public List<String> getSentences() {
-        return sentences;
-    }
-
 }
 
