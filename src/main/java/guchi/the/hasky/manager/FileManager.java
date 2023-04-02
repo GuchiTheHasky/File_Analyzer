@@ -6,6 +6,11 @@ import guchi.the.hasky.fileanalyzer.utils.DefaultModifierForTests;
 import java.io.*;
 
 public class FileManager {
+    public static void main(String[] args) {
+        int dirs = FileManager.filesCount("C:\\Windows");
+        System.out.println(dirs);
+        System.out.println("The end.");
+    }
 
     public static int filesCount(String path) {
         validatePath(path);
@@ -32,29 +37,44 @@ public class FileManager {
         file.renameTo(newFile);
     }
 
-    @DefaultModifierForTests
-    static void validatePath(String path) {
-        if (path == null) {
-            throw new NullPointerException("Error, current path is null.");
+    private static int filesCount(File directory) {
+        int count = 0;
+        File[] directories = directory.listFiles();
+        if (directories == null) {
+            return count;
         }
-        if (!new File(path).exists()) {
-            throw new IllegalArgumentException("Error, current directory: " + path + " doesn't exist.");
+        for (File file : directories) {
+            if (file.isFile()) {
+                count++;
+                count += filesCount(file);
+            } else {
+                File[] files = file.listFiles();
+                if (files != null) {
+                    count += filesCount(file);
+                }
+            }
         }
+        return count;
     }
-
-    @DefaultModifierForTests
-    static void validatePath(String path, String destination) {
-        validatePath(path);
-        validatePath(destination);
-    }
-
-    @DefaultModifierForTests
-    static void validateFileSize(File source) {
-        if (source.length() > 8192) {
-            throw new StackOverflowError("Error, current file: " + source + " is too large.");
+    private static int directoriesCount(File directory) {
+        int count = 0;
+        File[] directories = directory.listFiles();
+        if (directories == null) {
+            return count;
         }
+        for (File file : directories) {
+            if (file.isDirectory()) {
+                count++;
+                count += directoriesCount(file);
+            } else {
+                File[] files = file.listFiles();
+                if (files != null) {
+                    count += directoriesCount(file);
+                }
+            }
+        }
+        return count;
     }
-
     private static void copyFile(String path, String destination) {
         File source = new File(path);
         validateFileSize(source);
@@ -71,32 +91,25 @@ public class FileManager {
             throw new RuntimeException("Exception during file is reading.", e);
         }
     }
-
-    private static int directoriesCount(File directory) {
-        int count = 0;
-        File[] directories = directory.listFiles();
-        assert directories != null;
-        for (File file : directories) {
-            if (file.isDirectory()) {
-                count++;
-                count += directoriesCount(file);
-            }
-        }
-        return count;
+    @DefaultModifierForTests
+    static void validatePath(String path, String destination) {
+        validatePath(path);
+        validatePath(destination);
     }
 
-    private static int filesCount(File directory) {
-        int count = 0;
-        File[] directories = directory.listFiles();
-        assert directories != null;
-        for (File file : directories) {
-            if (file.isFile()) {
-                count++;
-            }
-            if (file.isDirectory()) {
-                count += filesCount(file);
-            }
+    @DefaultModifierForTests
+    static void validatePath(String path) {
+        if (path == null) {
+            throw new NullPointerException("Error, current path is null.");
         }
-        return count;
+        if (!new File(path).exists()) {
+            throw new IllegalArgumentException("Error, current directory: " + path + " doesn't exist.");
+        }
+    }
+    @DefaultModifierForTests
+    static void validateFileSize(File source) {
+        if (source.length() > 8192) {
+            throw new StackOverflowError("Error, current file: " + source + " is too large.");
+        }
     }
 }
