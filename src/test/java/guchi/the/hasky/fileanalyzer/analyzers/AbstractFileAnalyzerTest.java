@@ -39,8 +39,8 @@ public abstract class AbstractFileAnalyzerTest {
 
     abstract FileAnalyzer getAnalyzer();
 
-    @Test // 1.
-    @DisplayName("Test 1, throw exception if file path is null.")
+    @Test
+    @DisplayName("Test, throw exception if file path is null.")
     public void testThrowNullPointExceptionIfFilePathIsNull() {
         Throwable thrown = assertThrows(NullPointerException.class, () -> {
             analyzer.analyze(null, "Hello");
@@ -48,8 +48,8 @@ public abstract class AbstractFileAnalyzerTest {
         assertNotNull(thrown.getMessage());
     }
 
-    @Test // 2.
-    @DisplayName("Test 2, throw exception if word is null.")
+    @Test
+    @DisplayName("Test, throw exception if word is null.")
     public void testThrowNullPointExceptionIfWordIsNull() {
         Throwable thrown = assertThrows(NullPointerException.class, () -> {
             analyzer.analyze(DUCK_STORY, null);
@@ -57,8 +57,8 @@ public abstract class AbstractFileAnalyzerTest {
         assertNotNull(thrown.getMessage());
     }
 
-    @Test // 3.
-    @DisplayName("Test 3, throw exception if file is empty.")
+    @Test
+    @DisplayName("Test, throw exception if file is empty.")
     public void testThrowIllegalArgumentExceptionIfFileIsEmpty() {
         Throwable thrown = assertThrows(IllegalArgumentException.class, () -> {
             analyzer.analyze(EMPTY_FILE, "duck");
@@ -66,8 +66,8 @@ public abstract class AbstractFileAnalyzerTest {
         assertNotNull(thrown.getMessage());
     }
 
-    @Test // 4.
-    @DisplayName("Test 4, throw exception if file doesn't exist.")
+    @Test
+    @DisplayName("Test, throw exception if file doesn't exist.")
     public void testThrowIllegalArgumentExceptionIfFileDoesntExist() {
         String path = "this/file/does/not/exist.txt";
         Throwable thrown = assertThrows(IllegalArgumentException.class, () -> {
@@ -76,8 +76,8 @@ public abstract class AbstractFileAnalyzerTest {
         assertNotNull(thrown.getMessage());
     }
 
-    @Test // 6.
-    @DisplayName("Test 6, throw exception if word length is zero.")
+    @Test
+    @DisplayName("Test, throw exception if word length is zero.")
     public void testThrowIllegalArgumentExceptionIfWordLengthIsZero() {
         String path = "this/file/does/not/exist.txt";
         Throwable thrown = assertThrows(IllegalArgumentException.class, () -> {
@@ -86,8 +86,8 @@ public abstract class AbstractFileAnalyzerTest {
         assertNotNull(thrown.getMessage());
     }
 
-    @Test // 5.
-    @DisplayName("Test 5, calculate words count, check expected count.")
+    @Test
+    @DisplayName("Test, calculate words count, check expected count.")
     public void testCalculateWordsCountFromSourceFileAndCheckExpectedCount() {
         String word = "world";
         int expected = 5;
@@ -95,9 +95,8 @@ public abstract class AbstractFileAnalyzerTest {
         assertEquals(expected, info.getCountWord());
     }
 
-
-    @Test // 7.
-    @DisplayName("Test 7, test get filtered sentences List, check content.")
+    @Test
+    @DisplayName("Test, test get filtered sentences List, check content.")
     public void testFilteredListOfSentences() {
         String word = "world";
         String content = getContent(CONTENT_FOR_LIST_SENTENCES);
