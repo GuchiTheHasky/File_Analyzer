@@ -1,16 +1,10 @@
 package guchi.the.hasky.manager;
 
-
 import guchi.the.hasky.fileanalyzer.utils.DefaultModifierForTests;
 
 import java.io.*;
 
 public class FileManager {
-    public static void main(String[] args) {
-        int dirs = FileManager.filesCount("C:\\Windows");
-        System.out.println(dirs);
-        System.out.println("The end.");
-    }
 
     public static int filesCount(String path) {
         validatePath(path);
@@ -56,6 +50,7 @@ public class FileManager {
         }
         return count;
     }
+
     private static int directoriesCount(File directory) {
         int count = 0;
         File[] directories = directory.listFiles();
@@ -75,6 +70,7 @@ public class FileManager {
         }
         return count;
     }
+
     private static void copyFile(String path, String destination) {
         File source = new File(path);
         validateFileSize(source);
@@ -91,6 +87,7 @@ public class FileManager {
             throw new RuntimeException("Exception during file is reading.", e);
         }
     }
+
     @DefaultModifierForTests
     static void validatePath(String path, String destination) {
         validatePath(path);
@@ -106,6 +103,7 @@ public class FileManager {
             throw new IllegalArgumentException("Error, current directory: " + path + " doesn't exist.");
         }
     }
+
     @DefaultModifierForTests
     static void validateFileSize(File source) {
         if (source.length() > 8192) {
